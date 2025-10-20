@@ -6,4 +6,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InventoryApp.Domain\InventoryApp.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Inventories\Commands\" />
+    <Folder Include="Features\Inventories\Queries\" />
+    <Folder Include="Features\Items\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+  </ItemGroup>
+
 </Project>

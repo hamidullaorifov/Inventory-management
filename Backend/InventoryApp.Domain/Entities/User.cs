@@ -10,7 +10,7 @@ public class User : AuditableEntity
     public bool IsAdmin { get; set; }
     public string PasswordHash { get; set; }
     public string Language { get; set; } = "en";
-    public string Theme { get; set; }
+    public string Theme { get; set; } = "light";
 
     // Navigation property for related items
     public ICollection<Inventory> Inventories { get; set; } = [];

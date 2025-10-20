@@ -1,0 +1,12 @@
+﻿namespace InventoryApp.Application.Interfaces.Repositories;
+public interface IUnitOfWork
+{
+    IUserRepository UserRepository { get; }
+    IInventoryRepository InventoryRepository { get; }
+    IItemRepository ItemRepository { get; }
+    IInventoryAccessRepository InventoryAccessRepository { get; }
+    Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+}
