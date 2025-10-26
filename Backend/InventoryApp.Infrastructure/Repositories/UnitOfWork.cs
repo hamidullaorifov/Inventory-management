@@ -2,11 +2,14 @@
 using InventoryApp.Infrastructure.Persistence;
 
 namespace InventoryApp.Infrastructure.Repositories;
-public class UnitOfWork(IUserRepository userRepository, AppDbContext context) : IUnitOfWork
+public class UnitOfWork(
+    IUserRepository userRepository,
+    IInventoryRepository inventoryRepository,
+    AppDbContext context) : IUnitOfWork
 {
     public IUserRepository UserRepository => userRepository;
 
-    public IInventoryRepository InventoryRepository => throw new NotImplementedException();
+    public IInventoryRepository InventoryRepository => inventoryRepository;
 
     public IItemRepository ItemRepository => throw new NotImplementedException();
 

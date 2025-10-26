@@ -50,6 +50,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

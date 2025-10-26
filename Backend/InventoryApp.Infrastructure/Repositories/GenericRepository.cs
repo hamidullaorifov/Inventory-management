@@ -30,7 +30,7 @@ public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T> 
         {
             query = query.Where(predicate);
         }
-        return query;
+        return query.AsQueryable();
     }
 
     public async Task<T> GetByIdAsync(Guid id)

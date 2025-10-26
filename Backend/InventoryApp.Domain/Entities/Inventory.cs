@@ -12,5 +12,4 @@ public class Inventory : AuditableEntity
     public Guid CategoryId { get; set; }
     public InventoryCategory Category { get; set; }
     public ICollection<Item> Items { get; set; } = [];
-
 }
