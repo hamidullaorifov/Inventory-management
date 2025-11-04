@@ -1,4 +1,5 @@
-﻿using InventoryApp.Application.Features.Inventories.Commands;
+﻿using InventoryApp.Application.DTOs.Inventory;
+using InventoryApp.Application.Features.Inventories.Commands;
 using InventoryApp.Application.Features.Inventories.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,4 +24,29 @@ public class InventoriesController(IMediator mediator) : ControllerBase
         var inventoryId = await mediator.Send(command);
         return Ok(new {InventoryId = inventoryId });
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetInventoryById([FromRoute] Guid id)
+    {
+        var query = new GetInventoryByIdQuery(id);
+        var result = await mediator.Send(query);
+        return Ok(result);
+    }
+    [Authorize]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateInventory([FromRoute] Guid id, [FromBody] InventoryUpdateDto dto)
+    {
+        var command = new UpdateInventoryCommand(id, dto);
+        await mediator.Send(command);
+        return NoContent();
+    }
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteInventory([FromRoute] Guid id)
+    {
+        var command = new DeleteInventoryCommand(id);
+        await mediator.Send(command);
+        return NoContent();
+    }
+
 }

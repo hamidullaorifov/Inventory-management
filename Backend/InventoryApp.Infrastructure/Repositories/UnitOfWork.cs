@@ -5,13 +5,20 @@ namespace InventoryApp.Infrastructure.Repositories;
 public class UnitOfWork(
     IUserRepository userRepository,
     IInventoryRepository inventoryRepository,
+    ICategoryRepository categoryRepository,
+    ITagRepository tagRepository,
     AppDbContext context) : IUnitOfWork
 {
+    public AppDbContext Context => context;
     public IUserRepository UserRepository => userRepository;
 
     public IInventoryRepository InventoryRepository => inventoryRepository;
 
+    public ICategoryRepository CategoryRepository => categoryRepository;
+
     public IItemRepository ItemRepository => throw new NotImplementedException();
+
+    public ITagRepository TagRepository => tagRepository;
 
     public IInventoryAccessRepository InventoryAccessRepository => throw new NotImplementedException();
 

@@ -4,6 +4,8 @@ public interface IUnitOfWork
     IUserRepository UserRepository { get; }
     IInventoryRepository InventoryRepository { get; }
     IItemRepository ItemRepository { get; }
+    ICategoryRepository CategoryRepository { get; }
+    ITagRepository TagRepository { get; }
     IInventoryAccessRepository InventoryAccessRepository { get; }
     Task CommitTransactionAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);

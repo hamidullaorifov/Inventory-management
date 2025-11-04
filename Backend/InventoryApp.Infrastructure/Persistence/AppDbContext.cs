@@ -19,5 +19,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         
         modelBuilder.Entity<Tag>()
             .HasKey(t => t.Name);
+
+        modelBuilder.Entity<Inventory>()
+            .HasMany(i => i.Fields)
+            .WithOne(f => f.Inventory)
+            .HasForeignKey(f => f.InventoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Inventory>()
+            .HasMany(i => i.Tags)
+            .WithMany();
     }
 }

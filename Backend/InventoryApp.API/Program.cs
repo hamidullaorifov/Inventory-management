@@ -1,4 +1,5 @@
 using System.Reflection;
+using InventoryApp.API.Middleware;
 using InventoryApp.Application;
 using InventoryApp.Infrastructure;
 using InventoryApp.Infrastructure.Persistence;
@@ -66,7 +67,7 @@ using (var scope = app.Services.CreateScope())
         await context.Database.MigrateAsync();
     }
 }
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -74,6 +75,7 @@ if (app.Environment.IsDevelopment())
 }
 app.MapControllers();
 app.UseHttpsRedirection();
+
 
 
 await app.RunAsync();
