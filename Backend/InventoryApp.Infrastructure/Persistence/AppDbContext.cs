@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Item> Items { get; set; }
     public DbSet<InventoryCategory> InventoryCategories { get; set; }
     public DbSet<InventoryFieldDefinition> InventoryFieldDefinitions { get; set; }
+    public DbSet<ItemFieldValue> ItemFieldValues { get; set; }
     public DbSet<ItemLike> ItemLikes { get; set; }
     public DbSet<Tag> Tags { get; set; }
 

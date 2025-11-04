@@ -1,8 +1,8 @@
-﻿namespace InventoryApp.Domain.Entities;
-public class ItemFieldValue
-{
-    public Guid Id { get; set; } = Guid.NewGuid();
+﻿using InventoryApp.Domain.Common;
 
+namespace InventoryApp.Domain.Entities;
+public class ItemFieldValue : BaseEntity
+{
     public Guid ItemId { get; set; }
     public Item Item { get; set; }
 

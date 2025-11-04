@@ -18,5 +18,9 @@ public class InventoryProfile : Profile
         .ForMember(dest => dest.Tags, opt => opt.Ignore());
         CreateMap<InventoryFieldDefinition, InventoryFieldDto>();
 
+        // Inventory Field Definitions
+        CreateMap<InventoryFieldCreateDto, InventoryFieldDefinition>();
+        CreateMap<InventoryFieldUpdateDto, InventoryFieldDefinition>();
+
     }
 }

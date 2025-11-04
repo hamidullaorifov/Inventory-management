@@ -7,6 +7,9 @@ public class UnitOfWork(
     IInventoryRepository inventoryRepository,
     ICategoryRepository categoryRepository,
     ITagRepository tagRepository,
+    IInventoryFieldRepository inventoryFieldRepository,
+    IItemFieldRepository itemFieldRepository,
+    IItemRepository itemRepository,
     AppDbContext context) : IUnitOfWork
 {
     public AppDbContext Context => context;
@@ -16,7 +19,9 @@ public class UnitOfWork(
 
     public ICategoryRepository CategoryRepository => categoryRepository;
 
-    public IItemRepository ItemRepository => throw new NotImplementedException();
+    public IInventoryFieldRepository InventoryFieldRepository => inventoryFieldRepository;
+    public IItemFieldRepository ItemFieldRepository => itemFieldRepository;
+    public IItemRepository ItemRepository => itemRepository;
 
     public ITagRepository TagRepository => tagRepository;
 
