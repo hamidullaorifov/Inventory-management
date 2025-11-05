@@ -17,13 +17,15 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore
+        working-directory: ./Backend
         run: dotnet restore inventory.sln
 
       - name: Build
+        working-directory: ./Backend
         run: dotnet build inventory.sln -c Release --no-restore
 
       - name: Publish API
-        working-directory: ./InventoryApp.API
+        working-directory: ./Backend/InventoryApp.API
         run: dotnet publish -c Release -o publish
 
       - name: Prepare SSH key
@@ -31,7 +33,6 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          # optionally add host to known_hosts (auto-scan)
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Create target dir on server
@@ -39,7 +40,7 @@ jobs:
 
       - name: Copy files to server (rsync)
         run: |
-          rsync -avz --delete ./InventoryApp.API/publish/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_TARGET_DIR }}/
+          rsync -avz --delete ./Backend/InventoryApp.API/publish/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_TARGET_DIR }}/
 
       - name: Restart service on server
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo systemctl restart inventoryapp && sudo systemctl status inventoryapp --no-pager"
