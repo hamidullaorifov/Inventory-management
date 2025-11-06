@@ -10,7 +10,6 @@ public class Inventory : AuditableEntity
     public bool IsPublic { get; set; }
     public Guid OwnerId { get; set; }
     public User Owner { get; set; }
-    public string CustomIdFormatJson { get; set; }
     public Guid CategoryId { get; set; }
 
     [Timestamp]
@@ -19,4 +18,5 @@ public class Inventory : AuditableEntity
     public ICollection<Item> Items { get; set; } = [];
     public ICollection<InventoryFieldDefinition> Fields { get; set; } = [];
     public ICollection<Tag> Tags { get; set; } = [];
+    public ICollection<CustomIdElement> CustomIdElements { get; set; } = [];
 }

@@ -1,7 +1,9 @@
 ﻿using InventoryApp.Application.DTOs.Inventory;
+using InventoryApp.Application.DTOs.Item;
 using InventoryApp.Application.Features.Inventories.Commands;
 using InventoryApp.Application.Features.Inventories.Queries;
 using InventoryApp.Application.Features.InventoryFields.Commands;
+using InventoryApp.Application.Features.Items.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -74,5 +76,12 @@ public class InventoriesController(IMediator mediator) : ControllerBase
         await mediator.Send(command);
         return NoContent();
     }
-
+    [Authorize]
+    [HttpPost("{inventoryId}/items")]
+    public async Task<IActionResult> CreateItemInInventory([FromRoute] Guid inventoryId, [FromBody] CreateItemDto dto)
+    {
+        var command = new CreateItemCommand(inventoryId, dto);
+        var itemId = await mediator.Send(command);
+        return Ok(new { ItemId = itemId });
+    }
 }

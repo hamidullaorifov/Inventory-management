@@ -4,12 +4,17 @@ using InventoryApp.Application.DTOs.Item;
 using InventoryApp.Application.Interfaces.Repositories;
 using InventoryApp.Application.Interfaces.Services;
 using InventoryApp.Domain.Entities;
+using InventoryApp.Domain.Enums;
 using MediatR;
 
 namespace InventoryApp.Application.Features.Items.Commands;
 public record CreateItemCommand(Guid InventoryId, CreateItemDto Dto) : IRequest<Guid>;
 
-public class CreateItemCommandHandler(IUnitOfWork unitOfWork, IAuthService authService, IMapper mapper) : IRequestHandler<CreateItemCommand, Guid>
+public class CreateItemCommandHandler(
+    IUnitOfWork unitOfWork,
+    IAuthService authService,
+    IMapper mapper,
+    ICustomIdService customIdService) : IRequestHandler<CreateItemCommand, Guid>
 {
     public async Task<Guid> Handle(CreateItemCommand request, CancellationToken cancellationToken)
     {
@@ -20,7 +25,10 @@ public class CreateItemCommandHandler(IUnitOfWork unitOfWork, IAuthService authS
             Id = Guid.NewGuid(),
             InventoryId = request.InventoryId,
             CreatedById = authService.GetAuthenticatedUserId(),
-            CustomId = request.Dto.CustomId ?? string.Empty,
+            UpdatedById = authService.GetAuthenticatedUserId(),
+            CustomId = string.IsNullOrWhiteSpace(request.Dto.CustomId)
+                ? await customIdService.GenerateCustomIdAsync(inventory)
+                : request.Dto.CustomId,
         };
         var fieldValues = new List<ItemFieldValue>();
         foreach (var fv in request.Dto.FieldValues)
@@ -31,11 +39,28 @@ public class CreateItemCommandHandler(IUnitOfWork unitOfWork, IAuthService authS
             {
                 throw new BadRequestException($"Field definition {fv.FieldDefinitionId} does not belong to inventory {request.InventoryId}.");
             }
-            var fieldValue = mapper.Map<ItemFieldValue>(fv);
- 
+
+            var fieldValue = new ItemFieldValue
+            {
+                ItemId = item.Id,
+                FieldDefinitionId = fv.FieldDefinitionId,
+            };
+            if (fieldDef.Type == FieldType.Number)
+            {
+                fieldValue.NumberValue = fv.NumberValue;
+            }
+            else if (fieldDef.Type == FieldType.Boolean)
+            {
+                fieldValue.BoolValue = fv.BoolValue;
+            }
+            else
+            {
+                fieldValue.StringValue = fv.StringValue;
+            }
             fieldValues.Add(fieldValue);
 
         }
+        await unitOfWork.ItemRepository.AddAsync(item);
         await unitOfWork.ItemFieldRepository.AddRangeAsync(fieldValues);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return item.Id;

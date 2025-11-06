@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InventoryApp.Application.DTOs.Inventory;
+using InventoryApp.Application.DTOs.Item;
 using InventoryApp.Domain.Entities;
 
 namespace InventoryApp.Application.Mappings;
@@ -21,6 +22,9 @@ public class InventoryProfile : Profile
         // Inventory Field Definitions
         CreateMap<InventoryFieldCreateDto, InventoryFieldDefinition>();
         CreateMap<InventoryFieldUpdateDto, InventoryFieldDefinition>();
+        CreateMap<FieldValueDto, ItemFieldValue>();
+        CreateMap<Item, ItemDetailsDto>();
+        CreateMap<ItemFieldValue, FieldValueDto>();
 
     }
 }

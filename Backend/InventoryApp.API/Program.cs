@@ -70,7 +70,6 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
-Console.WriteLine("--> I am working");
 
 app.MapControllers();
 app.UseHttpsRedirection();

@@ -1,4 +1,5 @@
 ﻿using InventoryApp.Application.DTOs.Auth;
+using InventoryApp.Application.DTOs.Item;
 
 namespace InventoryApp.Application.DTOs.Inventory;
 public record InventoryDetailsDto
@@ -14,7 +15,7 @@ public record InventoryDetailsDto
     public DateTime CreatedAt { get; set; }
 
     public List<string> Tags { get; set; } = [];
-
     public List<InventoryFieldDto> Fields { get; set; } = [];
+    public List<ItemDetailsDto> Items { get; set; } = [];
     public List<UserAccessDto> WriteAccessUsers { get; set; } = [];
 }

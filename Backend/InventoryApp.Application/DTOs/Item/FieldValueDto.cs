@@ -5,5 +5,4 @@ public record FieldValueDto
     public string? StringValue { get; set; }
     public decimal? NumberValue { get; set; }
     public bool? BoolValue { get; set; }
-    public string? RawJson { get; set; }
 }

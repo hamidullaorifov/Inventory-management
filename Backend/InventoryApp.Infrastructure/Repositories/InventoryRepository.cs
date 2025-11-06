@@ -20,6 +20,8 @@ public class InventoryRepository(AppDbContext context) : GenericRepository<Inven
             .Include(i => i.Category)
             .Include(i => i.Owner)
             .Include(i => i.Tags)
+            .Include(i => i.Items)
+            .ThenInclude(i => i.FieldValues)
             .AsNoTracking()
             .FirstOrDefaultAsync(i => i.Id == id);
     }

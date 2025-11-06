@@ -6,6 +6,5 @@ public record InventoryUpdateDto
     public Guid CategoryId { get; set; }
     public bool IsPublic { get; set; }
     public string? ImageUrl { get; set; }
-    public string CustomIdFormatJson { get; set; } = "{}";
     public List<string> Tags { get; set; } = [];
 }

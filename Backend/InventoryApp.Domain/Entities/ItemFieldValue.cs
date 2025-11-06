@@ -8,8 +8,7 @@ public class ItemFieldValue : BaseEntity
 
     public Guid FieldDefinitionId { get; set; }
     public InventoryFieldDefinition FieldDefinition { get; set; }
-    public string StringValue { get; set; }
+    public string? StringValue { get; set; }
     public decimal? NumberValue { get; set; }
     public bool? BoolValue { get; set; }
-    public string RawJson { get; set; }
 }
