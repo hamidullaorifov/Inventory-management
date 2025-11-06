@@ -1,7 +1,5 @@
-﻿using InventoryApp.Domain.Common;
-
-namespace InventoryApp.Domain.Entities;
-public class ItemLike : BaseEntity
+﻿namespace InventoryApp.Domain.Entities;
+public class ItemLike
 {
     public Guid ItemId { get; set; }
     public Item Item { get; set; }

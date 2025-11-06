@@ -10,6 +10,7 @@ public class UnitOfWork(
     IInventoryFieldRepository inventoryFieldRepository,
     IItemFieldRepository itemFieldRepository,
     IItemRepository itemRepository,
+    IItemLikeRepository itemLikeRepository,
     AppDbContext context) : IUnitOfWork
 {
     public AppDbContext Context => context;
@@ -18,7 +19,7 @@ public class UnitOfWork(
     public IInventoryRepository InventoryRepository => inventoryRepository;
 
     public ICategoryRepository CategoryRepository => categoryRepository;
-
+    public IItemLikeRepository ItemLikeRepository => itemLikeRepository;
     public IInventoryFieldRepository InventoryFieldRepository => inventoryFieldRepository;
     public IItemFieldRepository ItemFieldRepository => itemFieldRepository;
     public IItemRepository ItemRepository => itemRepository;

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using InventoryApp.Application.Common.Exceptions;
+﻿using InventoryApp.Application.Common.Exceptions;
 using InventoryApp.Application.DTOs.Item;
 using InventoryApp.Application.Interfaces.Repositories;
 using InventoryApp.Application.Interfaces.Services;
@@ -13,7 +12,6 @@ public record CreateItemCommand(Guid InventoryId, CreateItemDto Dto) : IRequest<
 public class CreateItemCommandHandler(
     IUnitOfWork unitOfWork,
     IAuthService authService,
-    IMapper mapper,
     ICustomIdService customIdService) : IRequestHandler<CreateItemCommand, Guid>
 {
     public async Task<Guid> Handle(CreateItemCommand request, CancellationToken cancellationToken)

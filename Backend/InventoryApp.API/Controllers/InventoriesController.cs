@@ -84,4 +84,12 @@ public class InventoriesController(IMediator mediator) : ControllerBase
         var itemId = await mediator.Send(command);
         return Ok(new { ItemId = itemId });
     }
+    [Authorize]
+    [HttpPost("items/{itemId}/like")]
+    public async Task<IActionResult> LikeItem([FromRoute] Guid itemId)
+    {
+        var command = new ItemLikeCommand(itemId);
+        await mediator.Send(command);
+        return NoContent();
+    }
 }

@@ -30,5 +30,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.Entity<Inventory>()
             .HasMany(i => i.Tags)
             .WithMany();
+
+        modelBuilder.Entity<ItemLike>()
+            .HasKey(il => new { il.ItemId, il.UserId });
     }
 }

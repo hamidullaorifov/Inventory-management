@@ -8,6 +8,7 @@ public interface IUnitOfWork
     ITagRepository TagRepository { get; }
     IInventoryFieldRepository InventoryFieldRepository { get; }
     IItemFieldRepository ItemFieldRepository { get; }
+    IItemLikeRepository ItemLikeRepository { get; }
     IInventoryAccessRepository InventoryAccessRepository { get; }
     Task CommitTransactionAsync(CancellationToken cancellationToken = default);
     Task BeginTransactionAsync(CancellationToken cancellationToken = default);
