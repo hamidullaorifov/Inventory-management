@@ -11,6 +11,7 @@ public class UnitOfWork(
     IItemFieldRepository itemFieldRepository,
     IItemRepository itemRepository,
     IItemLikeRepository itemLikeRepository,
+    IInventoryAccessRepository inventoryAccessRepository,
     AppDbContext context) : IUnitOfWork
 {
     public AppDbContext Context => context;
@@ -26,7 +27,7 @@ public class UnitOfWork(
 
     public ITagRepository TagRepository => tagRepository;
 
-    public IInventoryAccessRepository InventoryAccessRepository => throw new NotImplementedException();
+    public IInventoryAccessRepository InventoryAccessRepository => inventoryAccessRepository;
 
     public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {

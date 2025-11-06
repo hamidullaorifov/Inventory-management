@@ -1,4 +1,6 @@
-﻿using InventoryApp.Application.Features.Users.Commands;
+﻿using InventoryApp.Application.DTOs.Auth;
+using InventoryApp.Application.Features.Users.Commands;
+using InventoryApp.Application.Features.Users.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +19,13 @@ public class AuthController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Login([FromBody] UserLoginCommand command)
     {
         var result = await mediator.Send(command);
+        return Ok(result);
+    }
+
+    [HttpGet("autocomplete")]
+    public async Task<ActionResult<List<UserAutocompleteDto>>> Autocomplete([FromQuery] string q)
+    {
+        var result = await mediator.Send(new UserAutocompleteQuery(q));
         return Ok(result);
     }
 }

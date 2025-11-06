@@ -33,5 +33,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
         modelBuilder.Entity<ItemLike>()
             .HasKey(il => new { il.ItemId, il.UserId });
+        modelBuilder.Entity<InventoryAccess>()
+            .HasKey(ia => new { ia.InventoryId, ia.UserId });
     }
 }

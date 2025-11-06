@@ -1,7 +1,5 @@
-﻿using InventoryApp.Domain.Common;
-
-namespace InventoryApp.Domain.Entities;
-public class InventoryAccess : AuditableEntity
+﻿namespace InventoryApp.Domain.Entities;
+public class InventoryAccess
 {
     public Guid InventoryId { get; set; }
     public Inventory Inventory { get; set; }

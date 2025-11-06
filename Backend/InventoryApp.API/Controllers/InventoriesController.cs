@@ -25,7 +25,7 @@ public class InventoriesController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> CreateInventory([FromBody] CreateInventoryCommand command)
     {
         var inventoryId = await mediator.Send(command);
-        return Ok(new {InventoryId = inventoryId });
+        return Ok(new { InventoryId = inventoryId });
     }
 
     [HttpGet("{id}")]
@@ -90,6 +90,22 @@ public class InventoriesController(IMediator mediator) : ControllerBase
     {
         var command = new ItemLikeCommand(itemId);
         await mediator.Send(command);
-        return NoContent();
+        return Ok(new { message = "Item liked successfully." });
+    }
+    [Authorize]
+    [HttpPost("{inventoryId}/access")]
+    public async Task<IActionResult> AddInventoryAccess([FromRoute] Guid inventoryId, [FromBody] AddInventoryAccessDto dto)
+    {
+        var command = new AddInventoryAccessCommand(inventoryId, dto);
+        await mediator.Send(command);
+        return Ok(new { Message = "User has been granted access to the inventory." });
+    }
+    [Authorize]
+    [HttpDelete("{inventoryId}/access/{userId}")]
+    public async Task<IActionResult> RemoveInventoryAccess([FromRoute] Guid inventoryId, [FromRoute] Guid userId)
+    {
+        var command = new RemoveInventoryAccessCommand(inventoryId, userId);
+        await mediator.Send(command);
+        return Ok(new { Message = "User has been removed from inventory access." });
     }
 }
