@@ -1,0 +1,66 @@
+<div class="container-fluid vh-100 bg-light">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-md-4 col-sm-8">
+      <div class="card shadow-lg">
+        <div class="card-body p-5">
+          <div class="text-center mb-4">
+            <h2 class="card-title text-primary">Inventory App</h2>
+            <p class="text-muted">Sign in to your account</p>
+          </div>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                formControlName="email"
+                placeholder="Enter your email"
+                [class.is-invalid]="email?.invalid && email?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="email?.errors?.['required'] && email?.touched">
+                Email is required
+              </div>
+              <div class="invalid-feedback" *ngIf="email?.errors?.['email'] && email?.touched">
+                Please enter a valid email
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                placeholder="Enter your password"
+                [class.is-invalid]="password?.invalid && password?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="password?.errors?.['required'] && password?.touched">
+                Password is required
+              </div>
+            </div>
+
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn btn-primary w-100 py-2"
+              [disabled]="isLoading"
+            >
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ isLoading ? 'Signing in...' : 'Sign In' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

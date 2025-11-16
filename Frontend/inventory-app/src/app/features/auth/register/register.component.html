@@ -1,0 +1,94 @@
+<div class="container-fluid vh-100 bg-light">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-md-4 col-sm-8">
+      <div class="card shadow-lg">
+        <div class="card-body p-5">
+          <div class="text-center mb-4">
+            <h2 class="card-title text-primary">Inventory App</h2>
+            <p class="text-muted">Sign up for your account</p>
+          </div>
+
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                formControlName="email"
+                placeholder="Enter your email"
+                [class.is-invalid]="email?.invalid && email?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="email?.errors?.['required'] && email?.touched">
+                Email is required
+              </div>
+              <div class="invalid-feedback" *ngIf="email?.errors?.['email'] && email?.touched">
+                Please enter a valid email
+              </div>
+            </div>
+			<div class="mb-3">
+			  <label for="fullName" class="form-label">Full Name</label>
+			  <input
+				type="text"
+				class="form-control"
+				id="fullName"
+				formControlName="fullName"
+				placeholder="Enter your full name"
+				[class.is-invalid]="fullName?.invalid && fullName?.touched"
+			  >
+			  <div class="invalid-feedback" *ngIf="fullName?.errors?.['required'] && fullName?.touched">
+				Full Name is required
+			  </div>
+			</div>
+			<div class="mb-3">
+			  <label for="profilePictureUrl" class="form-label">Profile Picture URL</label>
+				<input
+				  type="text"
+				  class="form-control"
+				  id="profilePictureUrl"
+				  formControlName="profilePictureUrl"
+				  placeholder="Enter your profile picture URL"
+				  [class.is-invalid]="profilePictureUrl?.invalid && profilePictureUrl?.touched"
+				>
+				<div class="invalid-feedback" *ngIf="profilePictureUrl?.errors?.['required'] && profilePictureUrl?.touched">
+				  Profile Picture URL is required
+				</div>
+			</div>
+            <!-- Password Field -->
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                placeholder="Enter your password"
+                [class.is-invalid]="password?.invalid && password?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="password?.errors?.['required'] && password?.touched">
+                Password is required
+              </div>
+            </div>
+
+
+            <!-- Error Message -->
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn btn-primary w-100 py-2"
+              [disabled]="isLoading"
+            >
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ isLoading ? 'Processing...' : 'Register' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

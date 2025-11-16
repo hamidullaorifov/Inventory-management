@@ -1,0 +1,159 @@
+<!-- src/app/components/inventory-create/inventory-create.component.html -->
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title mb-0">Create New Inventory Item</h3>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()">
+            <!-- Category Selection -->
+            <div class="mb-3">
+              <label for="categoryId" class="form-label">Category</label>
+              <select 
+                id="categoryId" 
+                class="form-select" 
+                formControlName="categoryId"
+                [class.is-invalid]="inventoryForm.get('categoryId')?.invalid && inventoryForm.get('categoryId')?.touched">
+                <option value="">Select a category</option>
+                @for (category of categories(); track category.id) {
+                  <option [value]="category.id">{{ category.name }}</option>
+                }
+              </select>
+              @if (inventoryForm.get('categoryId')?.invalid && inventoryForm.get('categoryId')?.touched) {
+                <div class="invalid-feedback">
+                  Please select a category
+                </div>
+              }
+            </div>
+
+            <!-- Name Field -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                class="form-control" 
+                formControlName="name"
+                [class.is-invalid]="inventoryForm.get('name')?.invalid && inventoryForm.get('name')?.touched">
+              @if (inventoryForm.get('name')?.invalid && inventoryForm.get('name')?.touched) {
+                <div class="invalid-feedback">
+                  @if (inventoryForm.get('name')?.errors?.['required']) {
+                    <div>Name is required</div>
+                  }
+                  @if (inventoryForm.get('name')?.errors?.['minlength']) {
+                    <div>Name must be at least 2 characters long</div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Description Field -->
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea 
+                id="description" 
+                class="form-control" 
+                formControlName="description"
+                rows="4"
+                [class.is-invalid]="inventoryForm.get('description')?.invalid && inventoryForm.get('description')?.touched">
+              </textarea>
+              @if (inventoryForm.get('description')?.invalid && inventoryForm.get('description')?.touched) {
+                <div class="invalid-feedback">
+                  @if (inventoryForm.get('description')?.errors?.['required']) {
+                    <div>Description is required</div>
+                  }
+                  @if (inventoryForm.get('description')?.errors?.['minlength']) {
+                    <div>Description must be at least 10 characters long</div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Image URL Field -->
+            <div class="mb-3">
+              <label for="imageUrl" class="form-label">Image URL (Optional)</label>
+              <input 
+                type="url" 
+                id="imageUrl" 
+                class="form-control" 
+                formControlName="imageUrl">
+            </div>
+
+            <!-- Tags Field -->
+            <div class="mb-3">
+              <label class="form-label">Tags</label>
+              
+              <!-- Selected Tags -->
+              @if (selectedTags().length > 0) {
+                <div class="mb-2">
+                  @for (tag of selectedTags(); track tag) {
+                    <span class="badge bg-primary me-2 mb-2">
+                      {{ tag }}
+                      <button 
+                        type="button" 
+                        class="btn-close btn-close-white ms-1" 
+                        (click)="removeTag(tag)"
+                        aria-label="Remove tag">
+                      </button>
+                    </span>
+                  }
+                </div>
+              }
+
+              <!-- Tag Input with Autocomplete -->
+              <input 
+                type="text" 
+                class="form-control" 
+                formControlName="tagInput"
+                (input)="onTagInput($event)"
+                placeholder="Start typing to search tags...">
+              
+              <!-- Suggested Tags -->
+              @if (suggestedTags().length > 0) {
+                <div class="mt-2">
+                  <div class="list-group">
+                    @for (tag of suggestedTags(); track tag) {
+                      <button 
+                        type="button" 
+                        class="list-group-item list-group-item-action"
+                        (click)="addTag(tag)">
+                        {{ tag }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (selectedTags().length === 0 && inventoryForm.touched) {
+                <div class="text-danger small mt-1">At least one tag is required</div>
+              }
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button 
+                type="button" 
+                class="btn btn-secondary me-md-2" 
+                routerLink="/inventory">
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="isSubmitting() || inventoryForm.invalid || selectedTags().length === 0">
+                @if (isSubmitting()) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Creating...
+                } @else {
+                  Create Inventory
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
