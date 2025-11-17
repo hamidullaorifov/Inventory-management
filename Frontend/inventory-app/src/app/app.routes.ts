@@ -5,8 +5,10 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { InventoriesListComponent } from './features/inventory/inventories-list/inventories-list.component';
 import { InventoryCreateComponent } from './features/inventory/inventory-create/inventory-create.component';
+import { InventoryDetailsComponent } from './features/inventory/inventory-details/inventory-details.component';
 
 export const routes: Routes = [
+  { path: 'inventory/:id', component: InventoryDetailsComponent },
   { path: '', component: InventoriesListComponent },
   { path: 'inventory/create', component: InventoryCreateComponent, canActivate: [AuthGuard]},
   { path: 'login', component: LoginComponent },

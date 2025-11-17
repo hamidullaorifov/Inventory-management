@@ -89,7 +89,7 @@
               @if (selectedTags().length > 0) {
                 <div class="mb-2">
                   @for (tag of selectedTags(); track tag) {
-                    <span class="badge bg-primary me-2 mb-2">
+                    <span class="badge bg-primary me-2 mb-2 p-2 d-inline-flex align-items-center">
                       {{ tag }}
                       <button 
                         type="button" 
@@ -103,28 +103,42 @@
               }
 
               <!-- Tag Input with Autocomplete -->
-              <input 
-                type="text" 
-                class="form-control" 
-                formControlName="tagInput"
-                (input)="onTagInput($event)"
-                placeholder="Start typing to search tags...">
-              
-              <!-- Suggested Tags -->
-              @if (suggestedTags().length > 0) {
-                <div class="mt-2">
-                  <div class="list-group">
-                    @for (tag of suggestedTags(); track tag) {
-                      <button 
-                        type="button" 
-                        class="list-group-item list-group-item-action"
-                        (click)="addTag(tag)">
-                        {{ tag }}
-                      </button>
-                    }
+              <div class="position-relative">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  formControlName="tagInput"
+                  (input)="onTagInput($event)"
+                  (keydown)="onTagKeyDown($event)"
+                  (blur)="onTagInputBlur()"
+                  placeholder="Type a tag and press Enter to add, or select from suggestions...">
+                
+                <!-- Suggested Tags Dropdown -->
+                @if (showSuggestions() && suggestedTags().length > 0) {
+                  <div class="position-absolute top-100 start-0 end-0 z-3 mt-1">
+                    <div class="card shadow-sm">
+                      <div class="card-header py-2">
+                        <small class="text-muted">Suggestions - Click to select</small>
+                      </div>
+                      <div class="list-group list-group-flush">
+                        @for (tag of suggestedTags(); track tag) {
+                          <button 
+                            type="button" 
+                            class="list-group-item list-group-item-action"
+                            (mousedown)="selectSuggestion(tag)">
+                            {{ tag }}
+                          </button>
+                        }
+                      </div>
+                    </div>
                   </div>
-                </div>
-              }
+                }
+              </div>
+
+              <!-- Help Text -->
+              <div class="form-text">
+                Type a tag and press Enter to add it. Tags will be created if they don't exist.
+              </div>
 
               @if (selectedTags().length === 0 && inventoryForm.touched) {
                 <div class="text-danger small mt-1">At least one tag is required</div>

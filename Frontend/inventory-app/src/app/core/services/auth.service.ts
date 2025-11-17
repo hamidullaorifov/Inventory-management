@@ -4,19 +4,21 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 export interface LoginResponse {
   token: string;
-  id: number;
+  id: string;
   email: string;
   fullName: string;
   language: string;
   profilePictureUrl: string;
+  isAdmin: boolean;
 }
 
 export interface User {
-  id: number;
+  id: string;
   email: string;
   fullName: string;
   language: string;
   profilePictureUrl: string;
+  isAdmin: boolean;
 }
 export interface RegisterRequest {
   email: string;
@@ -34,7 +36,7 @@ export interface RegisterResponse {
 export class AuthService {
   private apiUrl = 'http://localhost:5186/api';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+  public currentUser = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
     // Check if user data exists in localStorage
@@ -55,7 +57,8 @@ export class AuthService {
           email: response.email,
           fullName: response.fullName,
           language: response.language,
-          profilePictureUrl: response.profilePictureUrl
+          profilePictureUrl: response.profilePictureUrl,
+          isAdmin: response.isAdmin
         };
 
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -82,5 +85,9 @@ export class AuthService {
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
+  }
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user ? user.isAdmin : false;
   }
 }

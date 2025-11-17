@@ -7,11 +7,12 @@ import { InventorySummary } from '../../../models/inventory.model';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-inventories-list',
   templateUrl: './inventories-list.component.html',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
   styleUrls: ['./inventories-list.component.css'],
 })
 export class InventoriesListComponent implements OnInit {

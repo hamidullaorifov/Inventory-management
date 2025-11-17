@@ -1,0 +1,32 @@
+.tag-badge {
+  font-size: 0.875rem;
+  
+  .btn-close {
+    font-size: 0.7rem;
+  }
+}
+
+.suggestions-dropdown {
+  max-height: 200px;
+  overflow-y: auto;
+  
+  .list-group-item {
+    border: none;
+    padding: 0.5rem 1rem;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    &:active {
+      background-color: #e9ecef;
+    }
+  }
+}
+
+.position-relative {
+  .form-control:focus {
+    position: relative;
+    z-index: 4;
+  }
+}

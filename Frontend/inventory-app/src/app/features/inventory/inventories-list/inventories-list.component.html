@@ -30,7 +30,7 @@
 		<tbody>
 			<tr *ngFor="let inv of inventories">
 				<td>
-					<a [href]="['/inventories', inv.id]">{{inv.name}}</a>
+					<a [routerLink]="['/inventory', inv.id]">{{inv.name}}</a>
 				</td>
 				<td [attr.title]="inv.description">{{ short(inv.description) }}</td>
 				<td>
@@ -40,7 +40,7 @@
 					<ng-template #noTags>—</ng-template>
 				</td>
 				<td>
-					<a [href]="['/users', inv.ownerId]">{{inv.ownerName || '—'}}</a>
+					<a [routerLink]="['/users', inv.ownerId]">{{inv.ownerName || '—'}}</a>
 				</td>
 			</tr>
 		</tbody>

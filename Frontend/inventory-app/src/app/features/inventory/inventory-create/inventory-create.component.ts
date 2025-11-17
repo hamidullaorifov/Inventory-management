@@ -1,7 +1,8 @@
+// src/app/components/inventory-create/inventory-create.component.ts
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -13,7 +14,7 @@ import { Category, InventoryCreateRequest } from '../../../models/inventory.mode
 @Component({
   selector: 'app-inventory-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './inventory-create.component.html',
   styleUrls: ['./inventory-create.component.css']
 })
@@ -31,6 +32,7 @@ export class InventoryCreateComponent implements OnInit {
   tagSearchInput = new Subject<string>();
   isLoading = signal(false);
   isSubmitting = signal(false);
+  showSuggestions = signal(false);
 
   ngOnInit() {
     this.initializeForm();
@@ -68,7 +70,10 @@ export class InventoryCreateComponent implements OnInit {
       distinctUntilChanged(),
       switchMap(query => this.tagService.getAutocompleteTags(query))
     ).subscribe({
-      next: (tags) => this.suggestedTags.set(tags),
+      next: (tags) => {
+        this.suggestedTags.set(tags);
+        this.showSuggestions.set(tags.length > 0);
+      },
       error: (error) => console.error('Error loading tags:', error)
     });
   }
@@ -79,20 +84,60 @@ export class InventoryCreateComponent implements OnInit {
       this.tagSearchInput.next(input);
     } else {
       this.suggestedTags.set([]);
+      this.showSuggestions.set(false);
+    }
+  }
+
+  onTagKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.addCustomTag();
+    } else if (event.key === 'Escape') {
+      this.hideSuggestions();
+    }
+  }
+
+  addCustomTag() {
+    const tagInput = this.inventoryForm.get('tagInput')?.value?.trim();
+    if (tagInput && tagInput.length > 0) {
+      this.addTag(tagInput);
     }
   }
 
   addTag(tag: string) {
+    const trimmedTag = tag.trim();
+    if (!trimmedTag) return;
+
     const currentTags = this.selectedTags();
-    if (!currentTags.includes(tag)) {
-      this.selectedTags.set([...currentTags, tag]);
+    if (!currentTags.includes(trimmedTag)) {
+      this.selectedTags.set([...currentTags, trimmedTag]);
     }
-    this.inventoryForm.get('tagInput')?.setValue('');
-    this.suggestedTags.set([]);
+    this.clearTagInput();
+    this.hideSuggestions();
   }
 
   removeTag(tag: string) {
     this.selectedTags.set(this.selectedTags().filter(t => t !== tag));
+  }
+
+  selectSuggestion(tag: string) {
+    this.addTag(tag);
+  }
+
+  clearTagInput() {
+    this.inventoryForm.get('tagInput')?.setValue('');
+    this.suggestedTags.set([]);
+  }
+
+  hideSuggestions() {
+    this.showSuggestions.set(false);
+  }
+
+  onTagInputBlur() {
+    // Small delay to allow for suggestion click
+    setTimeout(() => {
+      this.hideSuggestions();
+    }, 200);
   }
 
   onSubmit() {
@@ -119,6 +164,11 @@ export class InventoryCreateComponent implements OnInit {
       });
     } else {
       this.markFormGroupTouched();
+      
+      // Show validation message if no tags
+      if (this.selectedTags().length === 0) {
+        alert('Please add at least one tag. You can type a tag and press Enter to add it.');
+      }
     }
   }
 
