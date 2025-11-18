@@ -38,14 +38,6 @@ export interface InventoryDetailsDto {
   writeAccessUsers: UserAccessDto[];
 }
 
-export interface InventoryFieldDto {
-  id: string;
-  title: string;
-  description?: string;
-  type: string;
-  showInTable: boolean;
-}
-
 export interface ItemDetailsDto {
   id: string;
   customId: string;
@@ -63,4 +55,26 @@ export interface FieldValueDto {
   stringValue?: string;
   numberValue?: number;
   boolValue?: boolean;
+}
+export interface CreateFieldRequest {
+  type: FieldType;
+  title: string;
+  description?: string;
+  showInTable: boolean;
+}
+
+export enum FieldType {
+  SingleLineText,
+  MultiLineText,
+  Number,
+  DocumentOrImage,
+  Boolean
+}
+
+export interface InventoryFieldDto {
+  id: string;
+  title: string;
+  description?: string;
+  type: FieldType;
+  showInTable: boolean;
 }

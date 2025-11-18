@@ -8,7 +8,10 @@ public class InventoryProfile : Profile
 {
     public InventoryProfile()
     {
-        CreateMap<Inventory, InventoryListDto>();
+        CreateMap<InventoryCategory, InventoryCategoryDto>();
+        CreateMap<Inventory, InventoryListDto>()
+            .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.Owner.FullName))
+            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(t => t.Name)));
         CreateMap<InventoryCreateDto, Inventory>()
             .ForMember(dest => dest.Tags, opt => opt.Ignore());
         CreateMap<Inventory, InventoryDetailsDto>()
@@ -25,6 +28,5 @@ public class InventoryProfile : Profile
         CreateMap<FieldValueDto, ItemFieldValue>();
         CreateMap<Item, ItemDetailsDto>();
         CreateMap<ItemFieldValue, FieldValueDto>();
-
     }
 }

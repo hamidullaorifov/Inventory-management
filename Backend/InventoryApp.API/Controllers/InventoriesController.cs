@@ -13,8 +13,20 @@ namespace InventoryApp.API.Controllers;
 [ApiController]
 public class InventoriesController(IMediator mediator) : ControllerBase
 {
+    [HttpGet("categories")]
+    public async Task<IActionResult> GetCategories()
+    {
+        var query = new GetInventoryCategoriesQuery();
+        return Ok(await mediator.Send(query));
+    }
+    [HttpGet("tags/autocomplete")]
+    public async Task<IActionResult> GetTags([FromQuery] string q)
+    {
+        var query = new TagAutocompleteQuery(q);
+        return Ok(await mediator.Send(query));
+    }
     [HttpGet]
-    public async Task<IActionResult> GetInventories([FromQuery] GetInventoriesQuery query)
+    public async Task<IActionResult> GetInventories([FromQuery] GetInventoriesQuery? query)
     {
         var result = await mediator.Send(query);
         return Ok(result);
@@ -22,8 +34,9 @@ public class InventoriesController(IMediator mediator) : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateInventory([FromBody] CreateInventoryCommand command)
+    public async Task<IActionResult> CreateInventory([FromBody] InventoryCreateDto dto)
     {
+        var command = new CreateInventoryCommand(dto);
         var inventoryId = await mediator.Send(command);
         return Ok(new { InventoryId = inventoryId });
     }
@@ -107,5 +120,12 @@ public class InventoriesController(IMediator mediator) : ControllerBase
         var command = new RemoveInventoryAccessCommand(inventoryId, userId);
         await mediator.Send(command);
         return Ok(new { Message = "User has been removed from inventory access." });
+    }
+    [HttpGet("{inventoryId}/access")]
+    public async Task<IActionResult> GetInventoryAccessList([FromRoute] Guid inventoryId)
+    {
+        var query = new GetInventoryAccessQuery(inventoryId);
+        var result = await mediator.Send(query);
+        return Ok(result);
     }
 }

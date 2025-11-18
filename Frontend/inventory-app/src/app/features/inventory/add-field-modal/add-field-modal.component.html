@@ -1,0 +1,85 @@
+<div class="modal fade show d-block" [class.show]="isVisible" tabindex="-1" role="dialog" *ngIf="isVisible">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New Field</h5>
+        <button type="button" class="btn-close" (click)="onCancel()" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <form (ngSubmit)="onSubmit()" #fieldForm="ngForm">
+          <!-- Field Title -->
+          <div class="mb-3">
+            <label for="fieldTitle" class="form-label">Field Title *</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fieldTitle"
+              [(ngModel)]="fieldData.title"
+              name="title"
+              required
+              placeholder="Enter field title">
+            <div class="form-text">This will be displayed as the column header in the table.</div>
+          </div>
+
+          <!-- Field Type -->
+          <div class="mb-3">
+            <label for="fieldType" class="form-label">Field Type</label>
+            <select
+              class="form-select"
+              id="fieldType"
+              [(ngModel)]="fieldData.type"
+              name="type">
+              <option *ngFor="let type of fieldTypes" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <label for="fieldDescription" class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              id="fieldDescription"
+              [(ngModel)]="fieldData.description"
+              name="description"
+              rows="3"
+              placeholder="Optional field description"></textarea>
+          </div>
+
+          <!-- Show in Table -->
+          <div class="mb-3">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="showInTable"
+                [(ngModel)]="fieldData.showInTable"
+                name="showInTable">
+              <label class="form-check-label" for="showInTable">
+                Show this field in the items table
+              </label>
+            </div>
+            <div class="form-text">
+              When checked, this field will appear as a column in the main items table.
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="onSubmit()"
+          [disabled]="!fieldData.title.trim()">
+          Add Field
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show" *ngIf="isVisible"></div>

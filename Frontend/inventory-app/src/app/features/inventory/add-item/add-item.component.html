@@ -1,0 +1,160 @@
+<div class="container-fluid py-4">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading inventory details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading && !submitting" class="alert alert-danger" role="alert">
+    {{ error }}
+    <button *ngIf="inventoryId" type="button" class="btn-close float-end" (click)="error = null" aria-label="Close"></button>
+  </div>
+
+  <!-- Add Item Form -->
+  <div *ngIf="inventory && !loading" class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-secondary me-3" (click)="onCancel()">
+              &larr; Back
+            </button>
+            <h5 class="card-title mb-0">Add New Item to {{ inventory.name }}</h5>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <form (ngSubmit)="onSubmit()" #itemForm="ngForm">
+            <!-- Custom ID Field -->
+            <div class="mb-4">
+              <label for="customId" class="form-label">Custom ID *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="customId"
+                [(ngModel)]="itemData.customId"
+                name="customId"
+                required
+                placeholder="Enter unique identifier for this item">
+              <div class="form-text">This will be used to uniquely identify the item in the system.</div>
+            </div>
+
+            <!-- Dynamic Fields -->
+            <div *ngIf="inventory.fields.length > 0" class="mb-4">
+              <h6 class="mb-3">Item Fields</h6>
+              
+              <div *ngFor="let field of inventory.fields" class="mb-3">
+                <label [for]="'field_' + field.id" class="form-label">
+                  {{ field.title }} *
+                  <span class="badge bg-secondary ms-1">{{ getFieldTypeLabel(field.type) }}</span>
+                </label>
+                
+                <div *ngIf="field.description" class="form-text mb-2">
+                  {{ field.description }}
+                </div>
+
+                <!-- Single Line Text Field -->
+                <div *ngIf="field.type === FieldType.SingleLineText">
+                  <input
+                    type="text"
+                    class="form-control"
+                    [id]="'field_' + field.id"
+                    [name]="'field_' + field.id"
+                    [(ngModel)]="getFieldValue(field.id).stringValue"
+                    (ngModelChange)="updateFieldValue(field.id, $event, 'string')"
+                    required
+                    [placeholder]="'Enter ' + field.title.toLowerCase()">
+                </div>
+
+                <!-- Multi Line Text Field -->
+                <div *ngIf="field.type === FieldType.MultiLineText">
+                  <textarea
+                    class="form-control"
+                    [id]="'field_' + field.id"
+                    [name]="'field_' + field.id"
+                    [(ngModel)]="getFieldValue(field.id).stringValue"
+                    (ngModelChange)="updateFieldValue(field.id, $event, 'string')"
+                    required
+                    rows="4"
+                    [placeholder]="'Enter ' + field.title.toLowerCase()"></textarea>
+                </div>
+
+                <!-- Number Field -->
+                <div *ngIf="field.type === FieldType.Number">
+                  <input
+                    type="number"
+                    class="form-control"
+                    [id]="'field_' + field.id"
+                    [name]="'field_' + field.id"
+                    [(ngModel)]="getFieldValue(field.id).numberValue"
+                    (ngModelChange)="updateFieldValue(field.id, $event, 'number')"
+                    required
+                    step="any"
+                    [placeholder]="'Enter ' + field.title.toLowerCase()">
+                </div>
+
+                <!-- Document or Image Field -->
+                <div *ngIf="field.type === FieldType.DocumentOrImage">
+                  <input
+                    type="file"
+                    class="form-control"
+                    [id]="'field_' + field.id"
+                    [name]="'field_' + field.id"
+                    (change)="onFileSelected(field.id, $event)"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp"
+                    required>
+                  <div class="form-text">
+                    Accepted files: PDF, Word documents, Images (JPG, PNG, GIF, WebP)
+                  </div>
+                  <div *ngIf="getFieldValue(field.id).stringValue" class="mt-2">
+                    <small class="text-success">Selected file: {{ getFieldValue(field.id).stringValue }}</small>
+                  </div>
+                </div>
+
+                <!-- Boolean Field -->
+                <div *ngIf="field.type === FieldType.Boolean">
+                  <div class="form-check">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [id]="'field_' + field.id"
+                      [name]="'field_' + field.id"
+                      [(ngModel)]="getFieldValue(field.id).boolValue"
+                      (ngModelChange)="updateFieldValue(field.id, $event, 'boolean')"
+                      required>
+                    <label class="form-check-label" [for]="'field_' + field.id">
+                      {{ field.title }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Fields Message -->
+            <div *ngIf="inventory.fields.length === 0" class="alert alert-info">
+              <p class="mb-0">No fields defined for this inventory. You can add fields in the inventory details page.</p>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()">
+                Cancel
+              </button>
+              
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="submitting || !itemData.customId.trim()">
+                <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                {{ submitting ? 'Adding Item...' : 'Add Item' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

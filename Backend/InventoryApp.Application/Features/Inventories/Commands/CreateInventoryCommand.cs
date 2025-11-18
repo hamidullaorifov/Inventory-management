@@ -5,7 +5,7 @@ using InventoryApp.Application.Interfaces.Repositories;
 using InventoryApp.Application.Interfaces.Services;
 using InventoryApp.Domain.Entities;
 using MediatR;
-
+// TODO: Research about JWT!
 namespace InventoryApp.Application.Features.Inventories.Commands;
 public record CreateInventoryCommand(InventoryCreateDto Inventory) : IRequest<Guid>;
 

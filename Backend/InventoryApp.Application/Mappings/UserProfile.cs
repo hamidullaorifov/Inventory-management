@@ -9,5 +9,7 @@ public class UserProfile : Profile
     {
         CreateMap<RegisterDto, User>();
         CreateMap<User, UserAutocompleteDto>();
+        CreateMap<User, UserAccessDto>()
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
     }
 }

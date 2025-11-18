@@ -32,11 +32,13 @@ public class UserLoginCommandHandler(IUnitOfWork unitOfWork, IAuthService authSe
         return new LoginResponseDto
         {
             Token = token,
+            Id = user.Id,
             FullName = user.FullName,
             Email = user.Email,
             Language = user.Language,
             Theme = user.Theme,
-            ProfilePictureUrl = user.ProfilePictureUrl
+            ProfilePictureUrl = user.ProfilePictureUrl,
+            IsAdmin = user.IsAdmin
         };
     }
 }

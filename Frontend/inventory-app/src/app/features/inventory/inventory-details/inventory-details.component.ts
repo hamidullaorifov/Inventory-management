@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { InventoryService } from '../../../core/services/inventory.service';
-import { InventoryDetailsDto, InventoryFieldDto, ItemDetailsDto } from '../../../models/inventory.model';
+import { AddFieldModalComponent } from '../add-field-modal/add-field-modal.component';
+import { InventoryDetailsDto, CreateFieldRequest, FieldType, ItemDetailsDto, InventoryFieldDto } from '../../../models/inventory.model';
 
 @Component({
   selector: 'app-inventory-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AddFieldModalComponent, RouterLink],
   templateUrl: './inventory-details.component.html',
   styleUrls: ['./inventory-details.component.css']
 })
@@ -15,6 +16,7 @@ export class InventoryDetailsComponent implements OnInit {
   inventory: InventoryDetailsDto | null = null;
   loading = true;
   error: string | null = null;
+  addingField = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,5 +60,44 @@ export class InventoryDetailsComponent implements OnInit {
 
   getTableFields(): InventoryFieldDto[] {
     return this.inventory?.fields.filter(field => field.showInTable) || [];
+  }
+
+  // Field management methods
+  openAddFieldModal(): void {
+    this.addingField = true;
+  }
+
+  onFieldAdded(fieldData: CreateFieldRequest): void {
+    if (!this.inventory) return;
+
+    const inventoryId = this.inventory.id;
+    this.inventoryService.addFieldToInventory(inventoryId, fieldData).subscribe({
+      next: (newField) => {
+        // Add the new field to the local inventory data
+        this.inventory!.fields.push(newField);
+        this.addingField = false;
+        
+        // Show success message (you could use a toast service here)
+        console.log('Field added successfully');
+      },
+      error: (error) => {
+        this.error = 'Failed to add field';
+        console.error('Error adding field:', error);
+        this.addingField = false;
+      }
+    });
+  }
+  getFieldTypeLabel(type: FieldType): string {
+    switch (type) {
+      case FieldType.SingleLineText: return 'Single Line Text';
+      case FieldType.MultiLineText: return 'Multi Line Text';
+      case FieldType.Number: return 'Number';
+      case FieldType.DocumentOrImage: return 'Document/Image';
+      case FieldType.Boolean: return 'Boolean';
+      default: return 'Unknown';
+    }
+  }
+  onAddFieldCancelled(): void {
+    this.addingField = false;
   }
 }

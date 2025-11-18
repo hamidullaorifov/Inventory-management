@@ -1,9 +1,13 @@
-﻿using InventoryApp.Domain.Entities;
+﻿using System.Security.Claims;
+using InventoryApp.Domain.Entities;
 
 namespace InventoryApp.Application.Interfaces.Services;
 public interface IAuthService
 {
-    Task<User> GetAuthenticatedUserAsync();
     Guid GetAuthenticatedUserId();
     string GenerateToken(User user);
+    Task<bool> CanEditInventory(Inventory inventory);
+    Task<bool> CanManageAccess(Inventory inventory);
+    Task<bool> CanAddOrEditItem(Inventory inventory);
+    bool IsAdmin(ClaimsPrincipal user);
 }

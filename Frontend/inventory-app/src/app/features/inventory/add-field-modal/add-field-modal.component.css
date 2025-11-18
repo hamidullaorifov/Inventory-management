@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.modal {
+  backdrop-filter: blur(2px);
+}
+
+.modal-content {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+}

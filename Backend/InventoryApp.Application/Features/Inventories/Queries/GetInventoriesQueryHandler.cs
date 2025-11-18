@@ -19,10 +19,10 @@ public class GetInventoriesQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
     public async Task<PagedResult<InventoryListDto>> Handle(GetInventoriesQuery request, CancellationToken cancellationToken)
     {
         var query = unitOfWork.InventoryRepository.Query();
-
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
-            query = query.Where(i => i.Name.Contains(request.Search));
+            query = query.Where(i =>
+            EF.Functions.ILike(i.Name, $"%{request.Search}%") || EF.Functions.Like(i.Description, $"%{request.Search}%"));
         }
         var totalCount = await query.CountAsync(cancellationToken);
         if (request.Offset.HasValue && request.Offset > 0)

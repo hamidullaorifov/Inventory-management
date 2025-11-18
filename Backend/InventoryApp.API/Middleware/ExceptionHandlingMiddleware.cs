@@ -34,6 +34,10 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
                 statusCode = HttpStatusCode.BadRequest;
                 message = ex.Message;
                 break;
+            case UnauthorizedAccessException:
+                statusCode = HttpStatusCode.Unauthorized;
+                message = ex.Message;
+                break;
             default:
                 break;
         }

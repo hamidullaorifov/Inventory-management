@@ -10,8 +10,9 @@ namespace InventoryApp.API.Controllers;
 public class AuthController(IMediator mediator) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserRegisterCommand command)
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
+        var command = new UserRegisterCommand(dto);
         var userId = await mediator.Send(command);
         return Ok(new { Id = userId });
     }
