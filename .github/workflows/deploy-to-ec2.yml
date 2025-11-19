@@ -1,4 +1,4 @@
-name: Build and Deploy to EC2
+name: Build and Deploy Full Stack
 
 on:
   push:
@@ -11,22 +11,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Backend Steps
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
 
-      - name: Restore
+      - name: Restore Backend
         working-directory: ./Backend
         run: dotnet restore inventory.sln
 
-      - name: Build
+      - name: Build Backend
         working-directory: ./Backend
         run: dotnet build inventory.sln -c Release --no-restore
 
       - name: Publish API
         working-directory: ./Backend/InventoryApp.API
         run: dotnet publish -c Release -o publish
+
+      # Frontend Steps
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: './Frontend/inventory-app/package-lock.json'
+
+      - name: Install Frontend Dependencies
+        working-directory: ./Frontend/inventory-app
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: ./Frontend/inventory-app
+        run: npm run build -- --configuration=production
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
 
       - name: Prepare SSH key
         run: |
@@ -35,12 +54,23 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Create target dir on server
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo mkdir -p ${{ secrets.EC2_TARGET_DIR }} && sudo chown ${{ secrets.EC2_USER }}:$${{ secrets.EC2_USER }} ${{ secrets.EC2_TARGET_DIR }}"
+      # Backend Deployment
+      - name: Create backend dir on server
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo mkdir -p ${{ secrets.EC2_TARGET_DIR }} && sudo chown ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} ${{ secrets.EC2_TARGET_DIR }}"
 
-      - name: Copy files to server (rsync)
+      - name: Copy backend files to server
         run: |
           rsync -avz ./Backend/InventoryApp.API/publish/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_TARGET_DIR }}/
 
-      - name: Restart service on server
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo systemctl restart inventoryapp && sudo systemctl status inventoryapp --no-pager"
+      # Frontend Deployment
+      - name: Create frontend dir on server
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo mkdir -p /var/www/inventory-app && sudo chown -R ${{ secrets.EC2_USER }}:${{ secrets.EC2_USER }} /var/www/inventory-app"
+
+      - name: Copy frontend files to server
+        run: |
+          rsync -avz ./Frontend/inventory-app/dist/inventory-app/browser/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/inventory-app/
+
+      - name: Restart services on server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo systemctl restart inventoryapp"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo systemctl restart nginx"
