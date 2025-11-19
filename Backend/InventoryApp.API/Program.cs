@@ -1,6 +1,7 @@
 using System.Reflection;
 using InventoryApp.API.Middleware;
 using InventoryApp.Application;
+using InventoryApp.Domain.Entities;
 using InventoryApp.Infrastructure;
 using InventoryApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -74,6 +75,16 @@ using (var scope = app.Services.CreateScope())
     {
         await context.Database.MigrateAsync();
     }
+    // Generate predefined categories
+    var categories = new List<string> { "Electronics", "Furniture", "Clothing", "Books", "Toys" };
+    foreach (var categoryName in categories)
+    {
+        if (!context.InventoryCategories.Any(c => c.Name == categoryName))
+        {
+            context.InventoryCategories.Add(new InventoryCategory {Id = Guid.NewGuid(), Name = categoryName });
+        }
+    }
+    await context.SaveChangesAsync();
 }
 app.UseCors();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
