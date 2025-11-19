@@ -8,11 +8,14 @@ import { InventoryDetailsComponent } from './features/inventory/inventory-detail
 import { AddItemComponent } from './features/inventory/add-item/add-item.component';
 
 export const routes: Routes = [
-  { path: 'inventory/:id', component: InventoryDetailsComponent },
-  { path: 'inventory/:id/add-item', component: AddItemComponent, canActivate: [AuthGuard]},
   { path: '', component: InventoriesListComponent },
-  { path: 'inventory/create', component: InventoryCreateComponent, canActivate: [AuthGuard]},
+
+  { path: 'inventory/create', component: InventoryCreateComponent, canActivate: [AuthGuard] },
+
+  { path: 'inventory/:id/add-item', component: AddItemComponent, canActivate: [AuthGuard] },
+  { path: 'inventory/:id', component: InventoryDetailsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+
   { path: '**', redirectTo: '' }
 ];
