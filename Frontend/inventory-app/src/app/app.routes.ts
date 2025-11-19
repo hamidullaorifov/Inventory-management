@@ -9,7 +9,7 @@ import { AddItemComponent } from './features/inventory/add-item/add-item.compone
 
 export const routes: Routes = [
   { path: 'inventory/:id', component: InventoryDetailsComponent },
-  { path: 'inventory/:id/add-item', component: AddItemComponent },
+  { path: 'inventory/:id/add-item', component: AddItemComponent, canActivate: [AuthGuard]},
   { path: '', component: InventoriesListComponent },
   { path: 'inventory/create', component: InventoryCreateComponent, canActivate: [AuthGuard]},
   { path: 'login', component: LoginComponent },

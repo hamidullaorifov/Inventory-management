@@ -11,6 +11,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # -------------------------
+      # Backend Build
+      # -------------------------
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -28,6 +31,25 @@ jobs:
         working-directory: ./Backend/InventoryApp.API
         run: dotnet publish -c Release -o publish
 
+      # -------------------------
+      # Frontend Build (Angular)
+      # -------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Install Angular dependencies
+        working-directory: ./Frontend/inventory-app
+        run: npm install
+
+      - name: Build Angular App
+        working-directory: ./Frontend/inventory-app
+        run: npm run build -- --configuration production
+
+      # -------------------------
+      # SSH + Deployment
+      # -------------------------
       - name: Prepare SSH key
         run: |
           mkdir -p ~/.ssh
@@ -35,12 +57,22 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Create target dir on server
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo mkdir -p ${{ secrets.EC2_TARGET_DIR }} && sudo chown ${{ secrets.EC2_USER }}:$${{ secrets.EC2_USER }} ${{ secrets.EC2_TARGET_DIR }}"
-
-      - name: Copy files to server (rsync)
+      - name: Create target dirs on server
         run: |
-          rsync -avz ./Backend/InventoryApp.API/publish/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:${{ secrets.EC2_TARGET_DIR }}/
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo mkdir -p /var/www/inventoryapp_api"
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo mkdir -p /var/www/inventoryapp_frontend"
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo chown -R ${{ secrets.EC2_USER }}:$${{ secrets.EC2_USER }} /var/www"
 
-      - name: Restart service on server
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo systemctl restart inventoryapp && sudo systemctl status inventoryapp --no-pager"
+      - name: Copy backend to server
+        run: |
+          rsync -avz ./Backend/InventoryApp.API/publish/ \
+          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/inventoryapp_api/
+
+      - name: Copy Angular frontend to server
+        run: |
+          rsync -avz ./Frontend/inventory-app/dist/inventory-app/ \
+          ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/var/www/inventoryapp_frontend/
+
+      - name: Restart backend service
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "sudo systemctl restart inventoryapp"
