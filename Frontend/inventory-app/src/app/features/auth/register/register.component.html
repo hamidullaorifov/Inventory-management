@@ -86,13 +86,18 @@
               <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
               {{ isLoading ? 'Processing...' : 'Register' }}
             </button>
-            <div class="text-center mt-3">
-              <p class="text-muted">
-                Already have an account? 
-                <a routerLink="/login" class="text-primary text-decoration-none">Sign in here</a>
-              </p>
-            </div>
           </form>
+          <div class="text-center mt-3">
+            <p class="text-muted">
+              Already have an account?
+              <button
+                type="button"
+                (click)="navigatetoLogin()"
+                class="btn btn-link text-primary text-decoration-none p-0 border-0"
+              >
+                Log in here
+              </button>
+            </p>
         </div>
       </div>
     </div>

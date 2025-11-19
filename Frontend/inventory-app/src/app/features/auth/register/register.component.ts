@@ -27,7 +27,9 @@ export class RegisterComponent {
       profilePictureUrl: ['']
     });
   }
-
+  navigatetoLogin() {
+    this.router.navigate(['/login']);
+  }
   onSubmit(): void {
     if (this.registerForm.invalid) {
       this.markFormGroupTouched();
